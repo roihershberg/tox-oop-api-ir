@@ -4,6 +4,10 @@ This project is a Python script that parses the [c-toxcore](https://github.com/T
 headers and generates a JSON file describing an Intermediate Representation of the appropriate Object-Oriented
 API.
 
+## Documentation
+
+Head on to the [documentation](https://roihershberg.github.io/tox-oop-api-ir/) for a reference of the format.
+
 ## Running
 
 1. Install requirements:
