@@ -1,6 +1,8 @@
 from pyclibrary import CParser
 from parsing_to_ir import *
+from download_headers import download_headers
 from typing import List, Union
+import argparse
 import json
 import re
 import os
@@ -478,14 +480,34 @@ def manual_rename(ir_classes: List[IRClass]):
 
 
 def main():
-    headers = ['tox.h']
+    arg_parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description='Generate an Intermediate Representation of a Tox OOP API from c-toxcore.\n\n'
+                    'Make sure the Tox headers are in a tox_headers directory. Otherwise download '
+                    'them with the --download-headers option.')
+    arg_parser.add_argument('--download-headers', action='store_true',
+                            help='download the Tox headers from the version this script supports')
+
+    if not os.path.exists(HEADERS_DIR):
+        os.mkdir(HEADERS_DIR)
+
+    args = arg_parser.parse_args()
+    if args.download_headers:
+        headers_to_download = ['toxcore/tox.h']
+        download_headers(HEADERS_DIR, 'v' + TOX_VERSION, headers_to_download)
 
     ir_enums: List[IREnum] = []
     ir_exceptions: List[IRException] = []
     ir_classes: List[IRClass] = []
 
+    headers = [header for header in os.listdir(HEADERS_DIR) if header.endswith('.h')]
+    if not headers:
+        print('There are no headers in the tox_headers folder. Make sure to download them either with the '
+              '--download-headers option or manually.')
+        exit(1)
     for header in headers:
-        parser = CParser(f'{HEADERS_DIR}/{header}', cache=f'{HEADERS_DIR}/{header}.cache')
+        header_file = f'{HEADERS_DIR}/{header}'
+        parser = CParser(header_file, cache=f'{header_file}.cache')
         defs: dict = parser.file_defs[header]
 
         # Parse enums
