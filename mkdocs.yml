@@ -1,5 +1,7 @@
 # yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
 site_name: Tox OOP API IR
+repo_url: https://github.com/roihershberg/tox-oop-api-ir
+repo_name: roihershberg/tox-oop-api-ir
 
 nav:
   - 'Home': 'index.md'
@@ -20,6 +22,8 @@ nav:
 
 theme:
   name: material
+  icon:
+    repo: fontawesome/brands/github
   features:
     - navigation.instant
     - navigation.indexes
