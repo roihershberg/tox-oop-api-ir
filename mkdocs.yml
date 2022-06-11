@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+site_name: My Docs
+
+nav:
+  - 'Home': 'index.md'
+  - 'Reference':
+      - 'reference/index.md'
+      - 'IREnum': 'reference/enum.md'
+      - 'IREnumValue': 'reference/enum_value.md'
+      - 'IRException': 'reference/exception.md'
+      - 'IRClass': 'reference/class.md'
+      - 'IRNativeHandle': 'reference/native_handle.md'
+      - 'IRNumberHandle': 'reference/number_handle.md'
+      - 'IRProperty': 'reference/property.md'
+      - 'IRFunction': 'reference/function.md'
+      - 'IRBufferWrapper': 'reference/buffer_wrapper.md'
+      - 'IRParam': 'reference/param.md'
+      - 'IRType': 'reference/type.md'
+      - 'CType': 'reference/ctype.md'
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.indexes
+    - navigation.top
+    - search
+    - search.suggest
+    - search.highlight
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  version:
+    provider: mike
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - def_list
+
+plugins:
+  - reflinkfixer
