@@ -1,0 +1,2 @@
+pyclibrary==0.1.7
+PyGithub==1.55
