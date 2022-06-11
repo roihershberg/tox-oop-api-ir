@@ -536,6 +536,7 @@ def main():
         # Parse functions to IR as they are
         functions_defs: dict = defs['functions']
         ir_functions: List[IRFunction] = parse_functions(functions_defs)
+        ir_functions = [ir_function for ir_function in ir_functions if 'operating_system' not in ir_function.name]
 
         convert_functions_error_code_to_exception(ir_functions, ir_exceptions)
 
