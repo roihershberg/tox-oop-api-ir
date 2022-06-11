@@ -483,13 +483,17 @@ def main():
     arg_parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description='Generate an Intermediate Representation of a Tox OOP API from c-toxcore.\n\n'
-                    'Make sure the Tox headers are in a tox_headers directory. Otherwise download '
+                    f'Make sure the Tox headers are in a {HEADERS_DIR} directory. Otherwise download '
                     'them with the --download-headers option.')
     arg_parser.add_argument('--download-headers', action='store_true',
                             help='download the Tox headers from the version this script supports')
 
     if not os.path.exists(HEADERS_DIR):
         os.mkdir(HEADERS_DIR)
+
+    supported_headers_and_base_class = {
+        'tox.h': 'Tox',
+    }
 
     args = arg_parser.parse_args()
     if args.download_headers:
@@ -502,10 +506,13 @@ def main():
 
     headers = [header for header in os.listdir(HEADERS_DIR) if header.endswith('.h')]
     if not headers:
-        print('There are no headers in the tox_headers folder. Make sure to download them either with the '
+        print(f'There are no headers in the {HEADERS_DIR} folder. Make sure to download them either with the '
               '--download-headers option or manually.')
         exit(1)
     for header in headers:
+        if header not in supported_headers_and_base_class.keys():
+            print(f'The header {header} is not supported. Please remove it from the {HEADERS_DIR} directory.')
+            exit(1)
         header_file = f'{HEADERS_DIR}/{header}'
         parser = CParser(header_file, cache=f'{header_file}.cache')
         defs: dict = parser.file_defs[header]
@@ -540,7 +547,7 @@ def main():
         # Move struct functions (first parameter is a struct) to the corresponding classes
         move_struct_functions_to_class(ir_functions, ir_classes, known_structs)
 
-        move_leftover_functions_to_base_class('Tox', ir_functions, ir_classes)
+        move_leftover_functions_to_base_class(supported_headers_and_base_class[header], ir_functions, ir_classes)
 
         # Remove class name as the prefix of the functions
         optimize_functions_name_in_classes(ir_classes)
