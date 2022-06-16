@@ -85,7 +85,7 @@ def move_struct_alloc_functions_to_class(
         known_structs: List[str]
 ):
     for func in [func for func in ir_functions]:
-        return_type: IRType = func.return_type
+        return_type: IRType = func.return_type.type
         return_type_ctype_name: str = return_type.ctype.name
         optimized_return_type_ctype_name = optimize_ctype_name(return_type_ctype_name)
         if optimized_return_type_ctype_name in known_structs and 'new' in func.name:
@@ -170,9 +170,14 @@ def is_ir_type_of_string(ir_type: IRType) -> bool:
 def set_buffer_size_func_to_return_types(ir_classes: List[IRClass]):
     for ir_class in ir_classes:
         for func in [func for func in ir_class.functions]:
-            if (func.return_type.is_array and not is_ir_type_of_string(func.return_type)
-                and not func.replaced_return_type
-            ) or (func.return_type.ctype.is_pointer and 'event' in func.cname and func.return_type.name != 'ToxEvents'):
+            if (
+                    func.return_type.type.is_array and not is_ir_type_of_string(func.return_type.type)
+                    and not func.return_type.replaced
+            ) or (
+                    func.return_type.type.ctype.is_pointer
+                    and 'event' in func.cname
+                    and func.return_type.type.name != 'ToxEvents'
+            ):
                 keyword = func.name[func.name.find(GETTER_SEARCH_KEYWORD) + len(GETTER_SEARCH_KEYWORD):]
                 if keyword == 'savedata_data':
                     keyword = 'savedata'
@@ -183,14 +188,14 @@ def set_buffer_size_func_to_return_types(ir_classes: List[IRClass]):
                     raise RuntimeError(f'Could not find size getter function for the keyword "{keyword}"')
                 if GETTER_SEARCH_KEYWORD in size_func.name and size_func in ir_class.functions:
                     ir_class.functions.remove(size_func)
-                func.return_type.get_size_func = size_func
+                func.return_type.type.get_size_func = size_func
 
 
 def optimize_buffer_getters(ir_classes: List[IRClass]):
     for ir_class in ir_classes:
         for func in [func for func in ir_class.functions]:
             if GETTER_SEARCH_KEYWORD in func.name or func.name == 'hash':
-                if func.return_type.name == 'void' or func.return_type.name == 'bool':
+                if func.return_type.type.name == 'void' or func.return_type.type.name == 'bool':
                     for ir_param in func.params:
                         if ir_param.type.is_array:
                             keyword = func.name[func.name.find(GETTER_SEARCH_KEYWORD) + len(GETTER_SEARCH_KEYWORD):]
@@ -208,15 +213,15 @@ def optimize_buffer_getters(ir_classes: List[IRClass]):
                             ir_param.type.get_size_func = size_func
                             # Convert the param to be returned
                             func.params.remove(ir_param)
-                            func.replaced_return_type = func.return_type
-                            func.return_type = ir_param.type
+                            func.return_type.replaced = func.return_type.type
+                            func.return_type.type = ir_param.type
                             break
 
 
 def optimize_buffer_setters(ir_classes: List[IRClass]):
     for ir_class in ir_classes:
         for func in ir_class.functions:
-            if SETTER_SEARCH_KEYWORD in func.name and func.return_type.name == 'void':
+            if SETTER_SEARCH_KEYWORD in func.name and func.return_type.type.name == 'void':
                 for ir_param in func.params:
                     if type(ir_param) == IRParam and ir_param.type.is_array:
                         keyword = func.name[func.name.find(SETTER_SEARCH_KEYWORD) + len(SETTER_SEARCH_KEYWORD):]
@@ -353,18 +358,18 @@ def manual_handling_of_functions_returning_number_handle(ir_classes: List[IRClas
                     or func.name == 'friend_add' \
                     or func.name == 'friend_add_norequest' \
                     or func.name == 'friend_by_public_key':
-                func.return_type.name = 'Friend'
-                func.return_type.contains_number_handle = True
+                func.return_type.type.name = 'Friend'
+                func.return_type.type.contains_number_handle = True
             elif func.name == 'conference_get_chatlist' \
                     or func.name == 'conference_new' \
                     or func.name == 'conference_by_id' \
                     or func.name == 'conference_by_uid' \
                     or func.name == 'conference_join':
-                func.return_type.name = 'Conference'
-                func.return_type.contains_number_handle = True
+                func.return_type.type.name = 'Conference'
+                func.return_type.type.contains_number_handle = True
             elif func.name == 'file_send':
-                func.return_type.name = 'File'
-                func.return_type.contains_number_handle = True
+                func.return_type.type.name = 'File'
+                func.return_type.type.contains_number_handle = True
 
 
 def manual_handling_of_functions(ir_classes: List[IRClass]):
@@ -406,9 +411,9 @@ def convert_getters_setters_to_properties(ir_classes: List[IRClass]):
 def remove_bool_return_type_if_throws_exception(ir_classes: List[IRClass]):
     for ir_class in ir_classes:
         for func in ir_class.functions:
-            if func.return_type.name == 'bool' and func.throws:
-                func.replaced_return_type = func.return_type
-                func.return_type = IRType('void', True, False, CType('void', False))
+            if func.return_type.type.name == 'bool' and func.throws:
+                func.return_type.replaced = func.return_type.type
+                func.return_type.type = IRType('void', True, False, CType('void', False))
 
 
 def convert_static_empty_params_functions_to_properties(ir_classes: List[IRClass]):

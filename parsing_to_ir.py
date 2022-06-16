@@ -80,7 +80,8 @@ def parse_functions(functions_defs: dict) -> List[IRFunction]:
 
                 params.append(IRParam(param_name, ir_param_type))
 
-        functions.append(IRFunction(func_name, func_name, return_type=parse_type(return_type), params=params))
+        functions.append(
+            IRFunction(func_name, func_name, return_type=IRReturnType(parse_type(return_type)), params=params))
 
     return functions
 

@@ -40,13 +40,19 @@ class IRBufferWrapper(IRObject):
         self.length_param = length_param
 
 
+class IRReturnType(IRObject):
+    def __init__(self, return_type: IRType):
+        super().__init__()
+        self.type = return_type
+        self.replaced: Optional[IRType] = None
+
+
 class IRFunction(IRObject):
-    def __init__(self, name: str, cname: str, return_type: IRType, params: List[Union[IRParam, IRBufferWrapper]]):
+    def __init__(self, name: str, cname: str, return_type: IRReturnType, params: List[Union[IRParam, IRBufferWrapper]]):
         super().__init__()
         self.name = name
         self.cname = cname
         self.return_type = return_type
-        self.replaced_return_type: Optional[IRType] = None
         self.throws: Optional[str] = None
         self.is_static = False
         self.params = params
