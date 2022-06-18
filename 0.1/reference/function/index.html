@@ -231,6 +231,8 @@
         
           
         
+          
+        
       
       
         
@@ -381,6 +383,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../return_type/" class="md-nav__link">
+        IRReturnType
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../buffer_wrapper/" class="md-nav__link">
         IRBufferWrapper
       </a>
@@ -478,8 +494,7 @@
 <span class="w">  </span><span class="nt">"object_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"IRFunction"</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="nt">"cname"</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"return_type"</span><span class="p">:</span><span class="w"> </span><span><a href="../type">IRType</a></span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"replaced_return_type"</span><span class="p">:</span><span class="w"> </span><span><a href="../type">IRType</a></span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"return_type"</span><span class="p">:</span><span class="w"> </span><span><a href="../return_type">IRReturnType</a></span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="nt">"throws"</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="nt">"is_static"</span><span class="p">:</span><span class="w"> </span><span class="err">boolea</span><span class="kc">n</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="nt">"params"</span><span class="p">:</span><span class="w"> </span><span>[<a href="../param">IRParam</a> | <a href="../buffer_wrapper">IRBufferWrapper</a>, ...]</span><span class="w"></span>
@@ -489,40 +504,17 @@
 <dt><code>name</code></dt>
 <dd>
 <p>The name of the function.</p>
-<p>E.g. <code class="highlight"><span class="err">boo</span><span class="kc">tstra</span><span class="err">p</span><span class="w"></span></code>.</p>
+<p>E.g. <code class="highlight"><span class="s2">"bootstrap"</span><span class="w"></span></code>.</p>
 </dd>
 <dt><code>cname</code></dt>
 <dd>
 <p>The original name of the function.</p>
-<p>E.g. <code class="highlight"><span class="kc">t</span><span class="err">ox_boo</span><span class="kc">tstra</span><span class="err">p</span><span class="w"></span></code>.</p>
+<p>E.g. <code class="highlight"><span class="s2">"tox_bootstrap"</span><span class="w"></span></code>.</p>
 </dd>
 <dt><code>return_type</code></dt>
 <dd>
-<p>The return type of the function.</p>
-<p>See <a href="../type">IRType</a>.</p>
-</dd>
-<dt><code>replaced_return_type</code> (<span class="nullable">Nullable</span>)</dt>
-<dd>
-<p>If not <code class="highlight"><span class="kc">null</span><span class="w"></span></code>, this signifies that the original return type (described in this field) was
-replaced with a different one (the one in <code>return_type</code>) as part of an optimization.</p>
-<p>The current optimizations that would result in the replacement of the types are:</p>
-<ul>
-<li>
-<p>Converting of buffer getters. Instead of passing a pointer to the buffer as a parameter
-   to the function, the buffer will be the returned object.</p>
-</li>
-<li>
-<p>Removal of boolean returned when the function throws an exception. If a function throws
-   an exception and it returns a <code>bool</code> indicating whether an error has occured, the <code>bool</code>
-   will be converted to <code>void</code> as the catching of the exception is now the indication of
-   an error.</p>
-</li>
-</ul>
-<p>This is useful for example when the value in this field is a <code>bool</code> type. In this case
-the binding should check if the returned <code>bool</code> from the C function was <code class="highlight"><span class="nb">false</span><span class="w"></span></code> and
-if it was, then throw an exception, either from the <code>throws</code> field or a general one if
-<code class="highlight"><span class="kc">null</span><span class="w"></span></code>.</p>
-<p>See <a href="../type">IRType</a>.</p>
+<p>The return type spec of the function.</p>
+<p>See <a href="../return_type">IRReturnType</a>.</p>
 </dd>
 <dt><code>throws</code> (<span class="nullable">Nullable</span>)</dt>
 <dd>
@@ -531,7 +523,7 @@ if it was, then throw an exception, either from the <code>throws</code> field or
 the root of the JSON by the <code>name</code> field. This indicates that the function has an additional
 parameter in the end expecting a pointer to the enum described in the <code>enum_name</code> field in the
 <a href="../exception">IRException</a> object. The function should check if the error is not <code>OK</code>
-or if the returned value is a <code>bool</code> then that it's <code class="highlight"><span class="nb">false</span><span class="w"></span></code> (see <code>replaced_return_type</code>
+or if the returned value is a <code>bool</code> then that it's <code class="highlight"><span class="nb">false</span><span class="w"></span></code> (see <code>replaced</code> in <code>return_type</code>
 above). If it is, then the function should throw the exception.</p>
 <p>E.g. <code class="highlight"><span class="s2">"ToxOptionsNew"</span><span class="w"></span></code>.</p>
 </dd>
@@ -584,13 +576,13 @@ or <a href="../buffer_wrapper">IRBufferWrapper</a>.</p>
       
       
         
-        <a href="../buffer_wrapper/" class="md-footer__link md-footer__link--next" aria-label="Next: IRBufferWrapper" rel="next">
+        <a href="../return_type/" class="md-footer__link md-footer__link--next" aria-label="Next: IRReturnType" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              IRBufferWrapper
+              IRReturnType
             </div>
           </div>
           <div class="md-footer__button md-icon">
