@@ -45,6 +45,7 @@ class IRReturnType(IRObject):
         super().__init__()
         self.type = return_type
         self.replaced: Optional[IRType] = None
+        self.param_index: Optional[int] = None
 
 
 class IRFunction(IRObject):

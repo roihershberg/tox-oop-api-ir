@@ -196,7 +196,7 @@ def optimize_buffer_getters(ir_classes: List[IRClass]):
         for func in [func for func in ir_class.functions]:
             if GETTER_SEARCH_KEYWORD in func.name or func.name == 'hash':
                 if func.return_type.type.name == 'void' or func.return_type.type.name == 'bool':
-                    for ir_param in func.params:
+                    for param_index, ir_param in enumerate(func.params):
                         if ir_param.type.is_array:
                             keyword = func.name[func.name.find(GETTER_SEARCH_KEYWORD) + len(GETTER_SEARCH_KEYWORD):]
                             if keyword == 'dht_id':  # Manual handling
@@ -215,6 +215,7 @@ def optimize_buffer_getters(ir_classes: List[IRClass]):
                             func.params.remove(ir_param)
                             func.return_type.replaced = func.return_type.type
                             func.return_type.type = ir_param.type
+                            func.return_type.param_index = param_index
                             break
 
 
