@@ -53,3 +53,11 @@ markdown_extensions:
 
 plugins:
   - reflinkfixer
+  - minify:
+        minify_html: true
+        minify_js: true
+        minify_css: true
+        htmlmin_opts:
+          remove_comments: true
+        css_files:
+          - stylesheets/extra.css
