@@ -15,6 +15,7 @@ nav:
       - 'IRNumberHandle': 'reference/number_handle.md'
       - 'IRProperty': 'reference/property.md'
       - 'IRFunction': 'reference/function.md'
+      - 'IRReturnType': 'reference/return_type.md'
       - 'IRBufferWrapper': 'reference/buffer_wrapper.md'
       - 'IRParam': 'reference/param.md'
       - 'IRType': 'reference/type.md'
