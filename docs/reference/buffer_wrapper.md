@@ -26,7 +26,7 @@ and a length and pass them to the C function.
 
     See [IRParam](../param).
 
-## Important notes
+!!! note
 
-The type and the name of the parameter to include in the API function should
-be the `type` and the `name` in the `buffer_param`.
+    The type and the name of the parameter to include in the API function should
+    be the `type` and the `name` in the `buffer_param`.

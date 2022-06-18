@@ -18,7 +18,7 @@
 
 :   If the type is a pointer. Either `#!json true` or `#!json false`.
 
-## Important Notes
+!!! note
 
-The mutability of the type (i.e. `#!c const`) is stored in the
-`mutable` field in the containing [IRType](../type) object.
+    The mutability of the type (i.e. `#!c const`) is stored in the
+    `mutable` field in the containing [IRType](../type) object.
