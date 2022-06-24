@@ -31,6 +31,7 @@ class IRParam(IRObject):
         super().__init__()
         self.name = name
         self.type = param_type
+        self.replaced_type: Optional[IRType] = None
 
 
 class IRBufferWrapper(IRObject):
