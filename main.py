@@ -90,6 +90,7 @@ def move_struct_alloc_functions_to_class(
         optimized_return_type_ctype_name = optimize_ctype_name(return_type_ctype_name)
         if optimized_return_type_ctype_name in known_structs and 'new' in func.name:
             func.name = NATIVE_ALLOCATE_FUNC_NAME
+            func.is_static = True
             ir_class = require_class(return_type.name, ir_classes)
             if not ir_class.handle:
                 ir_class.handle = IRNativeHandle()
@@ -106,6 +107,7 @@ def move_struct_functions_to_class(ir_functions: List[IRFunction], ir_classes: L
             if optimized_first_param_ctype_name in known_structs:
                 if 'free' in func.name or 'kill' in func.name:
                     func.name = NATIVE_DEALLOCATE_FUNC_NAME
+                    func.is_static = True
                     ir_class = require_class(first_param.type.name, ir_classes)
                     if not ir_class.handle:
                         ir_class.handle = IRNativeHandle()
