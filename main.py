@@ -91,6 +91,8 @@ def move_struct_alloc_functions_to_class(
         if optimized_return_type_ctype_name in known_structs and 'new' in func.name:
             func.name = NATIVE_ALLOCATE_FUNC_NAME
             func.is_static = True
+            func.return_type.replaced = func.return_type.type
+            func.return_type.type = IRType('ulong', True, False, CType('uint64_t', False))
             ir_class = require_class(return_type.name, ir_classes)
             if not ir_class.handle:
                 ir_class.handle = IRNativeHandle()
@@ -105,10 +107,13 @@ def move_struct_functions_to_class(ir_functions: List[IRFunction], ir_classes: L
             first_param_ctype_name: str = first_param.type.ctype.name
             optimized_first_param_ctype_name = optimize_ctype_name(first_param_ctype_name)
             if optimized_first_param_ctype_name in known_structs:
-                if 'free' in func.name or 'kill' in func.name:
+                if ('free' in func.name or 'kill' in func.name) and len(func.params) == 1:
                     func.name = NATIVE_DEALLOCATE_FUNC_NAME
                     func.is_static = True
-                    ir_class = require_class(first_param.type.name, ir_classes)
+                    first_param.name = 'handle'
+                    first_param.replaced_type = first_param.type
+                    first_param.type = IRType('ulong', True, False, CType('uint64_t', False))
+                    ir_class = require_class(first_param.replaced_type.name, ir_classes)
                     if not ir_class.handle:
                         ir_class.handle = IRNativeHandle()
                     ir_functions.remove(func)
