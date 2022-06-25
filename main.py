@@ -531,13 +531,13 @@ def main():
         ir_enums.extend(header_ir_enums)
 
         # Create exceptions when the enums represent errors (name starts with 'ToxErr')
-        error_ir_enums = filter(lambda ir_enum: ir_enum.name.startswith('ToxErr'), ir_enums)
+        header_error_ir_enums = filter(lambda ir_enum: ir_enum.name.startswith('ToxErr'), header_ir_enums)
         header_ir_exceptions: List[IRException] = list(map(
             lambda ir_enum: IRException(
                 name=ir_enum.name.replace('ToxErr', 'Tox'),
                 enum_name=ir_enum.name
             ),
-            error_ir_enums,
+            header_error_ir_enums,
         ))
         ir_exceptions.extend(header_ir_exceptions)
 
