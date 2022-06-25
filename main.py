@@ -320,13 +320,8 @@ def move_number_holders_functions_to_inner_classes(ir_classes: List[IRClass]) ->
                 param_match = matches[0]
                 class_snake_case_name = param_match.name.replace('_number', '')
                 ir_class_name = snake_case_to_pascal_case(class_snake_case_name)
-                if func.name == 'peer_number_is_ours':
-                    change_param_to_number_handle_wrapper(
-                        param_match,
-                        new_name=class_snake_case_name,
-                        new_type_name=ir_class_name,
-                    )
-                elif func.name == 'conference_invite' and ir_class.name == 'Friend':
+                if func.name == 'peer_number_is_ours' or (
+                        func.name == 'conference_invite' and ir_class.name == 'Friend'):
                     change_param_to_number_handle_wrapper(
                         param_match,
                         new_name=class_snake_case_name,
