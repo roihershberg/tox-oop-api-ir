@@ -20,6 +20,8 @@ NATIVE_DEALLOCATE_FUNC_NAME = 'deallocate_native'
 GETTER_SEARCH_KEYWORD = 'get_'
 SETTER_SEARCH_KEYWORD = 'set_'
 
+NATIVE_HANDLE_TYPE = IRType('ulong', True, False, CType('uint64_t', False))
+
 
 # https://stackoverflow.com/a/1118038
 def todict(obj, classkey=None):
@@ -92,7 +94,7 @@ def move_struct_alloc_functions_to_class(
             func.name = NATIVE_ALLOCATE_FUNC_NAME
             func.is_static = True
             func.return_type.replaced = func.return_type.type
-            func.return_type.type = IRType('ulong', True, False, CType('uint64_t', False))
+            func.return_type.type = NATIVE_HANDLE_TYPE
             ir_class = require_class(return_type.name, ir_classes)
             if not ir_class.handle:
                 ir_class.handle = IRNativeHandle()
@@ -112,7 +114,7 @@ def move_struct_functions_to_class(ir_functions: List[IRFunction], ir_classes: L
                     func.is_static = True
                     first_param.name = 'handle'
                     first_param.replaced_type = first_param.type
-                    first_param.type = IRType('ulong', True, False, CType('uint64_t', False))
+                    first_param.type = NATIVE_HANDLE_TYPE
                     ir_class = require_class(first_param.replaced_type.name, ir_classes)
                     if not ir_class.handle:
                         ir_class.handle = IRNativeHandle()
