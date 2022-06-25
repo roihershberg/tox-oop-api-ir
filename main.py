@@ -95,6 +95,9 @@ def move_struct_alloc_functions_to_class(
             func.is_static = True
             func.return_type.replaced = func.return_type.type
             func.return_type.type = NATIVE_HANDLE_TYPE
+            for ir_param in func.params:
+                ir_param.replaced_type = ir_param.type
+                ir_param.type = NATIVE_HANDLE_TYPE
             ir_class = require_class(return_type.name, ir_classes)
             if not ir_class.handle:
                 ir_class.handle = IRNativeHandle()
